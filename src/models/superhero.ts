@@ -6,10 +6,12 @@ export interface ISuperhero{
     superpowers: string[];
     trait: string,
     city: string,
-    friends: string[] 
+    friends: string[]
+    password: string
 }
 
-interface SuperheroModel extends ISuperhero, Mongoose.Document{}
+export interface SuperheroDocument extends ISuperhero, Mongoose.Document{
+}
 
 const SuperHeroSchema = new Mongoose.Schema({
     govermentName: {
@@ -17,6 +19,7 @@ const SuperHeroSchema = new Mongoose.Schema({
         trim: true
     },
     superheroName: {
+        unique: true,
         type: String,
         trim: true
     },
@@ -29,7 +32,8 @@ const SuperHeroSchema = new Mongoose.Schema({
         type: String,
         trim: true
     },
-    friends: [String]
+    friends: [String],
+    password: String
 });
 
-export default Mongoose.model<SuperheroModel>("Superhero", SuperHeroSchema);
+export default Mongoose.model<SuperheroDocument>("Superhero", SuperHeroSchema);
