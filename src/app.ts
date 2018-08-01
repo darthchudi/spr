@@ -1,11 +1,24 @@
 import createError from 'http-errors';
 import express from 'express';
-import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import mongoose from "mongoose";
+import path from 'path';
+import dotenv from "dotenv";
+import bodyparser from "body-parser";
 
-import indexRouter from './routes/index';
+import {resolveMongoDB} from "./helpers/config";
 
+import api from './routes/api';
+
+dotenv.config({path: path.join(__dirname, "../", ".env") });
+
+//Start MongoDB
+mongoose.connect(resolveMongoDB(process.env.NODE_ENV), {useNewUrlParser: true});
+var db = mongoose.connection;
+db.once('open', () => console.log("Mongoose connected! 🚀 🚀"));
+
+//Start Express
 var app = express();
 
 // view engine setup
@@ -14,11 +27,12 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
+app.use(bodyparser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use(function(_req: express.Request, _res: express.Response, next: express.NextFunction) {
