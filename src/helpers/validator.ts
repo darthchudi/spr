@@ -7,7 +7,7 @@ import {ISuperhero} from "../models/Superhero";
  * @returns {Object} Object containing an error object and the filtered/trimmed value
  */
 
- export function validateSuperheroInput(superhero: ISuperhero ) : {error: Error, value: ISuperhero}{
+ export function validateSuperheroInput(superhero: ISuperhero ) : {error: any, value: ISuperhero}{
     const schema = joi.object().keys({
         govermentName: joi.string().required().trim(),
         superheroName: joi.string().required().trim(),
