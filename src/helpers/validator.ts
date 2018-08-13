@@ -1,4 +1,4 @@
-import joi, { Err } from "joi";
+import joi from "joi";
 import {ISuperhero} from "../models/Superhero";
 
 /**
