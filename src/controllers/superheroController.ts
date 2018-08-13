@@ -115,6 +115,21 @@ export async function getAllSuperheros(_req: Request, res: Response){
     const response = await query.exec();
     return res.status(200).json({response});
   } catch(e){
-    return res.status(500).json({error: e});
+    return res.status(500).json({message: e});
   }
+}
+
+export async function getSuperheroFriends(req: Request, res: Response){
+  try {
+  const id = req.params.id;
+  const superhero = await Superhero.findById(id);
+  if(superhero){
+    const {superheroName, friends} = superhero;
+    return res.status(200).json({id, superheroName, friends});
+  } else {
+    return res.status(404).json({message: "Superhero not found"})
+  }
+} catch(e){
+  return res.status(500).json({message: e});
+}
 }
