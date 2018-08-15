@@ -14,7 +14,7 @@ import api from './routes/api';
 dotenv.config({path: path.join(__dirname, "../", ".env") });
 
 //Start MongoDB
-mongoose.connect(resolveMongoDB(process.env.NODE_ENV), {useNewUrlParser: true});
+mongoose.connect(<string>resolveMongoDB(process.env.NODE_ENV), {useNewUrlParser: true});
 var db = mongoose.connection;
 db.once('open', () => console.log("Mongoose connected! 🚀 🚀"));
 
