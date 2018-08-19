@@ -3,7 +3,7 @@ import { default as Superhero, SuperheroDocument } from '../models/Superhero';
 import {
   default as FriendRequest,
   FriendRequestDocument,
-} from '../models/FriendRequests';
+} from '../models/FriendRequest';
 import { validateSuperheroInput } from '../helpers/validator';
 import { valid } from 'joi';
 import jwt from 'jsonwebtoken';
