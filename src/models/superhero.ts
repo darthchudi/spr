@@ -8,6 +8,7 @@ export interface ISuperhero {
   trait: string;
   city: string;
   friends: string[];
+  friendRequests: string[];
   password: string;
 }
 
@@ -39,6 +40,10 @@ const SuperHeroSchema = new Mongoose.Schema({
     trim: true
   },
   friends: [String],
+  friendRequests: [{
+    type: Mongoose.Schema.Types.ObjectId,
+    ref: 'FriendRequests'
+  }],
   password: String
 });
 
