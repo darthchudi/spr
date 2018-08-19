@@ -1,4 +1,4 @@
-import Mongoose, {model, Schema, Document} from "mongoose";
+import Mongoose from "mongoose";
 
 export interface IFriendRequest{
   sender: string;
@@ -6,12 +6,15 @@ export interface IFriendRequest{
   status: string;
 }
 
-export interface FriendRequestDocument extends IFriendRequest, Document{}
+export interface FriendRequestDocument extends IFriendRequest, Mongoose.Document{}
 
-const FriendRequestSchema = new Schema({
-  sender: String,
-  reciever: String,
-  status: String
+const FriendRequestSchema = new Mongoose.Schema({
+  sender: Mongoose.Schema.Types.ObjectId,
+  reciever: Mongoose.Schema.Types.ObjectId,
+  status: {
+    type: Boolean,
+    default: false
+  }
 });
 
-export default model<FriendRequestDocument>("FriendRequests", FriendRequestSchema)
+export default Mongoose.model<FriendRequestDocument>("FriendRequests", FriendRequestSchema)
