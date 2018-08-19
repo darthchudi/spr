@@ -1,5 +1,20 @@
-import express from "express";
-import {createSuperHero, loginSuperhero, getSuperHero, getAllSuperheros, getSuperheroFriends, sendFriendRequest} from "../controllers/superheroController"
+import express from 'express';
+import {
+  createSuperHero,
+  loginSuperhero,
+  getSuperHero,
+  getAllSuperheros,
+  getSuperheroFriends,
+} from '../controllers/superheroController';
+
+import {
+  sendFriendRequest,
+  getFriendRequests,
+  acceptFriendRequest,
+} from '../controllers/friendRequestsController';
+
+import { authorizedRequest } from '../helpers';
+
 const router = express.Router();
 
 /* GET home page. */
@@ -13,6 +28,10 @@ router.get('/superheros', getAllSuperheros);
 
 router.get('/superhero/friends/:id', getSuperheroFriends);
 
-router.post('/requests/send', sendFriendRequest)
+router.post('/requests/send', authorizedRequest(sendFriendRequest));
+
+router.get('/requests/find/:criteria', authorizedRequest(getFriendRequests));
+
+router.post('/requests/accept', authorizedRequest(acceptFriendRequest));
 
 export default router;
