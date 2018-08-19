@@ -9,12 +9,12 @@ import {ISuperhero} from "../models/Superhero";
 
  export function validateSuperheroInput(superhero: ISuperhero ) : {error: any, value: ISuperhero}{
     const schema = joi.object().keys({
-        govermentName: joi.string().required().trim(),
-        superheroName: joi.string().required().trim(),
-        superpowers: joi.array().items(joi.string().required()).required(),
-        trait: joi.string().required(),
-        city: joi.string().required(),
-        friends: joi.array().items(joi.string().required()).required(),
+        govermentName: joi.string().required().trim().lowercase(),
+        superheroName: joi.string().required().trim().lowercase(),
+        superpowers: joi.array().items(joi.string().required().lowercase()).required(),
+        trait: joi.string().required().lowercase(),
+        city: joi.string().required().lowercase(),
+        // friends: joi.array().items(joi.string().required()).required(),
         password: joi.string().required().trim()
     });
 
