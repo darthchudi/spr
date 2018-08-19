@@ -3,7 +3,7 @@ import Mongoose from "mongoose";
 export interface IFriendRequest{
   sender: string;
   reciever: string;
-  status: string;
+  accepted: string;
 }
 
 export interface FriendRequestDocument extends IFriendRequest, Mongoose.Document{}
@@ -11,7 +11,7 @@ export interface FriendRequestDocument extends IFriendRequest, Mongoose.Document
 const FriendRequestSchema = new Mongoose.Schema({
   sender: Mongoose.Schema.Types.ObjectId,
   reciever: Mongoose.Schema.Types.ObjectId,
-  status: {
+  accepted: {
     type: Boolean,
     default: false
   }
