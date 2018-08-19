@@ -1,6 +1,5 @@
 import express from "express";
 import {createSuperHero, loginSuperhero, getSuperHero, getAllSuperheros, getSuperheroFriends, sendFriendRequest} from "../controllers/superheroController"
-import { Response } from "express-serve-static-core";
 const router = express.Router();
 
 /* GET home page. */
