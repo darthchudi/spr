@@ -1,21 +1,13 @@
 import { Request, Response } from 'express';
-import { default as Superhero, SuperheroDocument } from '../models/Superhero';
+import { default as Superhero } from '../models/Superhero';
 import {
   default as FriendRequest,
   FriendRequestDocument,
 } from '../models/FriendRequest';
+import { decodeToken } from '../helpers';
 import { validateSuperheroInput } from '../helpers/validator';
 import { valid } from 'joi';
 import jwt from 'jsonwebtoken';
-
-interface SuperheroResponse {
-  govermentName: string;
-  superheroName: string;
-  superpowers: string[];
-  trait: string;
-  city: string;
-  friends: string[];
-}
 
 export async function createSuperHero(req: Request, res: Response) {
   const {
@@ -92,22 +84,14 @@ export function loginSuperhero(req: Request, res: Response) {
 }
 
 export function getSuperHero(req: Request, res: Response) {
-  var token = req.headers.authorization;
-
-  jwt.verify(
-    <string>token,
-    <string>process.env.JWT_SECRET,
-    (err: any, superhero: any): void => {
-      if (err) {
-        res
-          .status(401)
-          .json({ message: 'Token has either expired or is invalid' });
-        return;
-      }
-
-      res.status(200).json({ superhero });
-    }
-  );
+  let superhero: object = {};
+  try {
+    superhero = decodeToken(<string>req.headers.authorization);
+    return res.status(200).json({ superhero });
+  } catch (e) {
+    res.status(401).json({ message: 'Token has either expired or is invalid' });
+    return;
+  }
 }
 
 export async function getAllSuperheros(_req: Request, res: Response) {
@@ -134,47 +118,4 @@ export async function getSuperheroFriends(req: Request, res: Response) {
   } catch (e) {
     return res.status(500).json({ message: e });
   }
-}
-
-export async function sendFriendRequest(req: Request, res: Response) {
-  if (!req.headers.authorization) {
-    return res.status(401).json({
-      message: 'Unauthorized action!',
-    });
-  }
-
-  const authorization = <string>req.headers.authorization;
-  const [_, token] = authorization.split(' ');
-  const recieverId = req.body.reciever;
-  const {
-    response: { _id: senderId },
-  }: any = await jwt.verify(token, <string>process.env.JWT_SECRET);
-
-  Superhero.findById(recieverId, (err, reciever) => {
-    if (err || !reciever)
-      return res.status(500).json({
-        message:
-          'There was an error finding the reciever of the friend request',
-      });
-
-    const newFriendRequest = new FriendRequest({
-      sender: senderId,
-      reciever: reciever._id,
-    });
-
-    newFriendRequest.save((err, _sentRequest) => {
-      if (err)
-        return res.status(500).json({
-          message: 'There was an error sending the friend request',
-        });
-
-      return res.status(200).json({
-        message: `Friend request successfully sent to ${
-          reciever.superheroName
-        }`,
-      });
-    });
-    return;
-  });
-  return;
 }
