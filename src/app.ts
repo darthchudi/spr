@@ -2,21 +2,24 @@ import createError from 'http-errors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 import path from 'path';
-import dotenv from "dotenv";
-import bodyparser from "body-parser";
+import dotenv from 'dotenv';
+import bodyparser from 'body-parser';
 
-import {resolveMongoDB} from "./helpers/config";
+import { resolveMongoDB } from './helpers/config';
 
 import api from './routes/api';
 
-dotenv.config({path: path.join(__dirname, "../", ".env") });
+dotenv.config({ path: path.join(__dirname, '../', '.env') });
 
 //Start MongoDB
-mongoose.connect(<string>resolveMongoDB(), {useNewUrlParser: true});
+mongoose.connect(
+  <string>resolveMongoDB(),
+  { useNewUrlParser: true }
+);
 var db = mongoose.connection;
-db.once('open', () => console.log("Mongoose connected! 🚀 🚀"));
+db.once('open', () => console.log('Mongoose connected! 🚀 🚀'));
 
 //Start Express
 var app = express();
@@ -30,15 +33,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', api);
 
 // catch 404 and forward to error handler
-app.use(function(_req: express.Request, _res: express.Response, next: express.NextFunction) {
+app.use(function(
+  _req: express.Request,
+  _res: express.Response,
+  next: express.NextFunction
+) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) {
-  console.log(err)
+app.use(function(
+  err: any,
+  _req: express.Request,
+  res: express.Response,
+  _next: express.NextFunction
+) {
+  console.log(err);
 
-  res.status(err.status || 500).json({message: err});
+  res.status(err.status || 500).json({ message: err });
 });
 
 export default app;

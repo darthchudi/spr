@@ -1,5 +1,5 @@
-import Mongoose from "mongoose";
-import bcrypt from "bcrypt-nodejs";
+import Mongoose from 'mongoose';
+import bcrypt from 'bcrypt-nodejs';
 
 export interface ISuperhero {
   govermentName: string;
@@ -22,38 +22,38 @@ export interface SuperheroDocument extends ISuperhero, Mongoose.Document {
 const SuperHeroSchema = new Mongoose.Schema({
   govermentName: {
     type: String,
-    trim: true
+    trim: true,
   },
   superheroName: {
     unique: true,
     type: String,
-    trim: true
+    trim: true,
   },
   superpowers: {
     type: [String],
     required: true,
-    trim: true
+    trim: true,
   },
   trait: {
     type: String,
-    trim: true
+    trim: true,
   },
   city: {
     type: String,
-    trim: true
+    trim: true,
   },
   friends: {
     type: [String],
     default: [],
-    trim: true
+    trim: true,
   },
-  password: String
+  password: String,
 });
 
-SuperHeroSchema.pre("save", function(next) {
+SuperHeroSchema.pre('save', function(next) {
   const superhero = <SuperheroDocument>this;
 
-  if (!superhero.isModified("password")) return next();
+  if (!superhero.isModified('password')) return next();
 
   /**
    * Generate hash salt and store hashed password
@@ -87,4 +87,4 @@ SuperHeroSchema.methods.comparePassword = function(
   });
 };
 
-export default Mongoose.model<SuperheroDocument>("Superhero", SuperHeroSchema);
+export default Mongoose.model<SuperheroDocument>('Superhero', SuperHeroSchema);

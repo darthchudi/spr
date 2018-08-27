@@ -1,14 +1,12 @@
 import { Request, Response } from 'express';
-import { default as Superhero } from '../models/Superhero';
-import {
-  default as FriendRequest
-} from '../models/FriendRequest';
+import { default as Superhero, SuperheroDocument } from '../models/Superhero';
+import { default as FriendRequest} from '../models/FriendRequest';
 import { decodeToken } from '../helpers';
 import jwt from 'jsonwebtoken';
 
 export async function sendFriendRequest(req: Request, res: Response) {
   const recieverId = req.body.reciever;
-  let senderId: string = "";
+  let senderId: string = '';
   try {
     senderId = (await decodeToken(<string>req.headers.authorization))._id;
   } catch (e) {
@@ -32,13 +30,16 @@ export async function sendFriendRequest(req: Request, res: Response) {
       });
 
     const usersAreFriends = await Superhero.findOne({
-      _id: senderId,
-      friends: recieverId,
+      _id: {
+        $in: [senderId, recieverId]
+      },
+      friends: {
+        $in: [senderId, recieverId]
+      },
     });
     if (usersAreFriends)
       return res.status(401).json({
-        message:
-          'You are already friends with this superhero',
+        message: 'You are already friends with this superhero',
       });
   } catch (e) {
     return res
@@ -80,7 +81,7 @@ export async function getFriendRequests(
   req: Request,
   res: Response
 ): Promise<any> {
-  let superheroId: string = "";
+  let superheroId: string = '';
   try {
     superheroId = (await decodeToken(<string>req.headers.authorization))._id;
   } catch (e) {
@@ -122,29 +123,47 @@ export async function getFriendRequests(
 
 export async function acceptFriendRequest(req: Request, res: Response) {
   const friendRequestId = req.body.friendRequestId;
-  let recieverId : string = "";
+  let recieverId: string = '';
   try {
     recieverId = (await decodeToken(<string>req.headers.authorization))._id;
   } catch (e) {
     res.status(401).json({ message: 'Token has expired' });
   }
 
-  FriendRequest.findOneAndUpdate(
+  FriendRequest.findOneAndRemove(
     { _id: friendRequestId, reciever: recieverId },
-    { accepted: true },
-    (err, acceptedFriendRequest) => {
+    async (err, acceptedFriendRequest) => {
       if (err)
-        return res
-          .status(200)
-          .json({
-            message: 'An error occcured while accepting friend request',
-          });
-      
-      if(!acceptedFriendRequest) return res.status(404).json({message: "Friend request does not exist"})
+        return res.status(500).json({
+          message: 'An error occcured while accepting friend request',
+        });
 
-      return res
-        .status(200)
-        .json({ message: 'Successfully accepted friend request' });
+      if (!acceptedFriendRequest)
+        return res
+          .status(404)
+          .json({ message: 'Friend request does not exist' });
+
+      try {
+        await dispatchFriendRequestAcceptance(acceptedFriendRequest.sender, acceptedFriendRequest.reciever);
+        return res.status(200).json({
+          message: 'Successfully accepted friend request',
+        });
+      } catch (e) {
+        //Roll back friend request update here
+        return res
+          .status(500)
+          .json({ message: 'An error occured while accepting friend request' });
+      }
     }
   );
+}
+
+async function dispatchFriendRequestAcceptance(senderId: string, recieverId: string) : Promise <any>{
+  const sender = <SuperheroDocument>(await Superhero.findById(senderId))
+  sender.friends.push(recieverId);
+  await sender.save();
+
+  const reciever = <SuperheroDocument>(await Superhero.findById(recieverId));
+  reciever.friends.push(senderId);
+  await reciever.save();
 }
