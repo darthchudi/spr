@@ -6,9 +6,7 @@ jobs:
     working_directory: ~/superhero-connect
     steps:
       - checkout
-      - run:
-          - name: 'Install Dependencies'
-          - command: 'yarn install'
+      - run: yarn install
       # - run:
       #     - name: Build Typescript
       #     - command: yarn run build:tsc >> /tmp/logs/tsc-build-logs 2>&1
