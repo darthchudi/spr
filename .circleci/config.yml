@@ -3,16 +3,16 @@ jobs:
   build:
     docker:
       - image: circleci/node:carbon
-      - image: circleci/mongo:3.4.15
     working_directory: ~/superhero-connect
     steps:
       - checkout
-      - run:
-          - name: Install Dependencies
-          - command: yarn install; mkdir -p /tmp/logs
-      - run:
-          - name: Build Typescript
-          - command: yarn run build:tsc >> /tmp/logs/tsc-build-logs 2>&1
-      - run:
-          - name: Run Tests
-          - command: yarn test >> /tmp/logs/test-logs 2>&1
+      - run: echo "hello world"
+      # - run:
+      #     - name: Install Dependencies
+      #     - command: yarn install; mkdir -p /tmp/logs
+      # - run:
+      #     - name: Build Typescript
+      #     - command: yarn run build:tsc >> /tmp/logs/tsc-build-logs 2>&1
+      # - run:
+      #     - name: Run Tests
+      #     - command: yarn test >> /tmp/logs/test-logs 2>&1
