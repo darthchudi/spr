@@ -8,6 +8,8 @@ RUN yarn
 
 COPY . .
 
+RUN yarn run build:tsc
+
 EXPOSE 8080
 
 CMD ["yarn", "start"]
