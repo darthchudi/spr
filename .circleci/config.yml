@@ -4,12 +4,23 @@ jobs:
     docker:
       - image: circleci/node:carbon
     working_directory: ~/superhero-connect
+
     steps:
       - checkout
-      - run: yarn install
-      # - run:
-      #     - name: Build Typescript
-      #     - command: yarn run build:tsc >> /tmp/logs/tsc-build-logs 2>&1
-      # - run:
-      #     - name: Run Tests
-      #     - command: yarn test >> /tmp/logs/test-logs 2>&1
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          name: Install Packages
+          command: yarn install; mkdir -p /tmp/logs
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Build Typescript
+          command: yarn run build:tsc >> /tmp/logs/tsc-build-logs 2>&1
+      - run:
+          name: Run Tests
+          command: yarn test >> /tmp/logs/test-logs 2>&1
