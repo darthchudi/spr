@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           - name: Install Dependencies
-          - command: yarn install; mkdir -p /tmp/logs
+          - command: yarn install;
       # - run:
       #     - name: Build Typescript
       #     - command: yarn run build:tsc >> /tmp/logs/tsc-build-logs 2>&1
