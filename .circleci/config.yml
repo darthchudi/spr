@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:carbon
+      - image: circleci/mongo:3.4
     working_directory: ~/superhero-connect
 
     steps:
@@ -20,7 +21,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
       - run:
           name: Build Typescript
-          command: yarn run build:tsc >> /tmp/logs/tsc-build-logs 2>&1
+          command: yarn run build:tsc
       - run:
           name: Run Tests
-          command: yarn test >> /tmp/logs/test-logs 2>&1
+          command: yarn test
