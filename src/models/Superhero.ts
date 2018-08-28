@@ -75,7 +75,7 @@ SuperHeroSchema.pre('save', function(next) {
 });
 
 /**
- * Compares the given plain text against the hashed password of the superhero
+ * Compare the given plain text against the hashed password of the superhero
  * @param {string} plainText - The plain text to be compared against the user password
  */
 SuperHeroSchema.methods.comparePassword = function(
